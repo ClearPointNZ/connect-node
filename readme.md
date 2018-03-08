@@ -63,7 +63,7 @@ Output will be like:
 	"appName":"dashboard",
 	"priority":"REST",
 	"message":"Send POST request",
-	"payload":"{\"status\":200,\"url\":\"https://www.google.com\",\"method\":\"POST\"}
+	"payload":"{\"status\":200,\"url\":\"https://www.google.com\",\"method\":\"POST\"}"
 }
 ```
 
