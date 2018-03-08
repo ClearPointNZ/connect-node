@@ -1,65 +1,87 @@
 function Logger(configuration) {
-	let json = {};
-	let logger = {};
+    let json = {};
+    let logger = {};
 
-	if (!configuration.appName) {
-		return;
-	}
+    if (!configuration.appName) {
+        return;
+    }
 
-	json.appName = configuration.appName;
+    json.appName = configuration.appName;
 
-	function trace(message, payload) {
-		printLog('REST', message, payload);
-	}
+    function log(priority, message, payload) {
+        if (typeof priority !== 'string') {
+            throw new TypeError('priority must be string');
+        }
+        printLog(priority, message, payload);
+    }
 
-	logger.trace = trace;
+    logger.log = log;
 
-	function debug(message, payload) {
-		printLog('DEBUG', message, payload);
-	}
+    function trace(message, payload) {
+        printLog('REST', message, payload);
+    }
 
-	logger.debug = debug;
+    logger.trace = trace;
 
-	function info(message, payload) {
-		printLog('INFO', message, payload);
-	}
+    function debug(message, payload) {
+        printLog('DEBUG', message, payload);
+    }
 
-	logger.info = info;
+    logger.debug = debug;
 
-	function warn(message, payload) {
-		printLog('WARN', message, payload);
-	}
+    function info(message, payload) {
+        printLog('INFO', message, payload);
+    }
 
-	logger.warn = warn;
+    logger.info = info;
 
-	function error(message, payload) {
-		printLog('ERROR', message, payload);
-	}
+    function warn(message, payload) {
+        printLog('WARN', message, payload);
+    }
 
-	logger.error = error;
+    logger.warn = warn;
 
-	function printLog(priority, message, payload) {
-		if (!message) {
-			return;
-		}
+    function error(message, payload) {
+        printLog('ERROR', message, payload);
+    }
 
-		delete json.payload;
-		json.priority = priority;
-		json.message = message;
+    logger.error = error;
 
-		if (payload) {
-			json.payload = `${JSON.stringify(payload)}`;
-		}
-		if (priority !== 'ERROR') {
-			console.log(JSON.stringify(json));
-		} else {
-			console.error(JSON.stringify(json));
-		}
-	}
+    function printLog(priority, message, payload) {
+        if (!priority) {
+            priority = 'REST';
+        }
 
-	return logger;
+        if (!message) {
+            return;
+        }
+
+        delete json.payload;
+        json.priority = priority;
+
+        if (typeof message === 'object') {
+            json.message = `${JSON.stringify(message)}`;
+        } else {
+            json.message = message;
+        }
+
+        if (payload) {
+            if (typeof payload === 'object') {
+                json.payload = `${JSON.stringify(payload)}`;
+            } else {
+                json.payload = payload;
+            }
+        }
+        if (priority !== 'ERROR') {
+            console.log(JSON.stringify(json));
+        } else {
+            console.error(JSON.stringify(json));
+        }
+    }
+
+    return logger;
 }
 
 module.exports.createLogger = function createLogger(configuration) {
-	return new Logger(configuration);
+    return new Logger(configuration);
 };
