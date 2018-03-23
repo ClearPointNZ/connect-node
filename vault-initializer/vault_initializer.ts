@@ -1,0 +1,7 @@
+
+
+class VaultInitializer {
+    public configureVaultClient() {
+
+    }
+}

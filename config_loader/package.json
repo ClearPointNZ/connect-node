@@ -1,0 +1,38 @@
+{
+  "name": "connect-config-loader",
+  "version": "1.1.1",
+  "description": "a standard way to find and deploy vault keys",
+  "author": "Richard Vowles <richard@bluetrainsoftware.com>",
+  "main": "./src/vault-init.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ClearPointNZ/connect-node.git"
+  },
+  "keywords": [
+    "config",
+    "security",
+    "pookums",
+    "properties",
+    "yaml"
+  ],
+  "scripts": {
+    "build": "yarn run tsc",
+    "build:watch": "yarn run build -- -- -w",
+    "test": "yarn run mocha -- --opts mocha.opts",
+    "test:watch": "yarn run mocha --opts mocha.opts --watch",
+    "mocha": "node ./node_modules/mocha/bin/mocha",
+    "tsc": "node ./node_modules/typescript/bin/tsc",
+    "lint": "node ./node_modules/tslint/bin/tslint -r ./node_modules/tslint-microsoft-contrib/ \"app/**/*.ts\" \"spec/**/*.ts\" -e \"app/generated-code/**/*\""
+  },
+  "dependencies": {
+    "@types/node": "^9.4.7",
+    "chokidar": "^2.0.2",
+    "js-yaml": "^3.11.0",
+    "lodash": "^4.17.5",
+    "minimist": "^1.2.0",
+    "typescript": "^2.7.2"
+  },
+  "engines": {
+    "node": ">=8.1.0"
+  }
+}
