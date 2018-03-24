@@ -23,9 +23,19 @@
     "lint": "node ./node_modules/tslint/bin/tslint -r ./node_modules/tslint-microsoft-contrib/ \"app/**/*.ts\" \"spec/**/*.ts\" -e \"app/generated-code/**/*\""
   },
   "dependencies": {
-    "typescript": "^2.7.2"
+    "@types/node-vault": "^0.5.2",
+    "@types/request": "^2.47.0",
+    "@types/request-promise-native": "^1.0.14",
+    "connect-config-loader": "file:.yalc/connect-config-loader",
+    "lodash": "^4.17.5",
+    "node-vault": "^0.8.0",
+    "request": "^2.85.0",
+    "request-promise-native": "^1.0.5"
   },
   "engines": {
     "node": ">=8.1.0"
+  },
+  "devDependencies": {
+    "connect-build": "file:.yalc/connect-build"
   }
 }

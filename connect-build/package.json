@@ -1,19 +1,17 @@
 {
-  "name": "connect-config-loader",
+  "name": "connect-build",
   "version": "1.1.1",
-  "description": "a standard way to find and deploy vault keys",
+  "description": "the standard set of dev dependencies for connect-typescript lilbraries",
   "author": "Richard Vowles <richard@bluetrainsoftware.com>",
-  "main": "./target/config-loader.js",
+  "main": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/ClearPointNZ/connect-node.git"
   },
   "keywords": [
-    "config",
+    "build",
     "security",
-    "pookums",
-    "properties",
-    "yaml"
+    "droplets-of-doom"
   ],
   "scripts": {
     "build": "yarn run tsc",
@@ -25,24 +23,14 @@
     "lint": "node ./node_modules/tslint/bin/tslint -r ./node_modules/tslint-microsoft-contrib/ \"app/**/*.ts\" \"spec/**/*.ts\" -e \"app/generated-code/**/*\""
   },
   "dependencies": {
-    "@types/chokidar": "^1.7.5",
-    "@types/js-yaml": "^3.10.1",
-    "@types/lodash": "^4.14.106",
-    "@types/minimist": "^1.2.0",
-    "@types/node": "^9.4.7",
-    "chokidar": "^2.0.3",
-    "js-yaml": "^3.11.0",
-    "lodash": "^4.17.5",
-    "minimist": "^1.2.0",
-    "reflect-metadata": "^0.1.12"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.1.2",
-    "@types/mocha": "^5.0.0",
-    "chai": "^4.1.2",
-    "mocha": "^5.0.5",
-    "ts-node": "^5.0.1",
-    "typescript": "^2.7.2"
+    "@types/chai": "4.1.2",
+    "@types/mocha": "5.0.0",
+    "chai": "4.1.2",
+    "mocha": "5.0.5",
+    "ts-node": "5.0.1",
+    "tslint": "5.9.1",
+    "tslint-microsoft-contrib": "5.0.3",
+    "typescript": "2.7.2"
   },
   "engines": {
     "node": ">=8.1.0"
