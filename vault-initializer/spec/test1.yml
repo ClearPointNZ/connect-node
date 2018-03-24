@@ -1,0 +1,7 @@
+
+
+sample:
+  host1: "[K8SVAULT]aws/keys/sausage"
+  myname: "[K8SVAULT]aws/keys/sausage!"
+  straightkeys: "[K8SVAULT]aws/keys/sausage#mykey,yourkey"
+  complexkeys: "[K8SVAULT]aws/keys/sausage#mykey=mykey2,yourkey=yourkey2"

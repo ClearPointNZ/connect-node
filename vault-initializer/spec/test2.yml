@@ -1,0 +1,13 @@
+
+vault:
+  url: https://vault.state.svc.cluster.local:8200
+  role: gdt-integrationflows
+  tokenFile: /tmp/token
+  certFile: /tmp/cacert
+
+oauth2:
+  client-secret: "[K8SVAULT]secret/3rdparty/oauth/clients"
+
+aws: "[K8SVAULT]aws/creds/integrationflows#access_key=accessKeyId,secret_key=secretKey"
+
+chippie: "[K8SVAULT]aws/creds/integrationflows!"

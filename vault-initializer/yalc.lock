@@ -1,0 +1,13 @@
+{
+  "version": "v1",
+  "packages": {
+    "connect-build": {
+      "signature": "42031d8d8a83276d12c01ce3a94c7caf",
+      "file": true
+    },
+    "connect-config-loader": {
+      "signature": "02a23efa4f165892e0dc20e7219442fa",
+      "file": true
+    }
+  }
+}

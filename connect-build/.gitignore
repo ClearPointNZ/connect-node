@@ -1,0 +1,13 @@
+*.iml
+.idea
+file.json
+node_modules
+.idea/workspace.xml
+*.html
+*.xml
+!build.xml
+common-library/reports
+@rerun.txt
+subscribe-pay/features/reports
+tmp
+@rerun*
