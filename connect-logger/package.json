@@ -1,0 +1,37 @@
+{
+  "name": "connect-logger",
+  "version": "1.1.1",
+  "description": "a stateful logger for connect that matches the Java expectations in format.",
+  "author": "Richard Vowles <richard@bluetrainsoftware.com>",
+  "main": "./target/app/config-loader.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ClearPointNZ/connect-node.git"
+  },
+  "keywords": [
+    "config",
+    "logger",
+    "pookums",
+    "properties",
+    "yaml"
+  ],
+  "scripts": {
+    "build": "yarn run tsc",
+    "build:watch": "yarn run build -- -- -w",
+    "test": "yarn run mocha -- --opts mocha.opts",
+    "test:watch": "yarn run mocha --opts mocha.opts --watch",
+    "mocha": "node ./node_modules/mocha/bin/mocha",
+    "tsc": "node ./node_modules/typescript/bin/tsc",
+    "lint": "node ./node_modules/tslint/bin/tslint -r ./node_modules/tslint-microsoft-contrib/ \"app/**/*.ts\" \"spec/**/*.ts\" -e \"app/generated-code/**/*\""
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.106",
+    "lodash": "^4.17.5"
+  },
+  "engines": {
+    "node": ">=8.1.0"
+  },
+  "devDependencies": {
+    "connect-build": "file:.yalc/connect-build"
+  }
+}

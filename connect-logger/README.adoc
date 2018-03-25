@@ -1,0 +1,73 @@
+== why another logging library?
+
+This one is geared specifically towards k8s deployed applications. That means it needs to self configure
+from external configuration, it always writes to the console, it always handles context, and log levels are
+whatever the hell i want them to be and are not restricted to numbers (really bunyan? that is so utterly daft)
+or some arbitrary enforced step-grade (aka winston and everything else).
+
+- connect-logging always logs to the console.
+- the you tell it the log level names you want to turn off, not the ones you want to turn on
+- log levels are arbitrary but several are set up for you
+- each logger stores context, you create loggers, store context in them and then let them disappear when
+  you have finished.
+- for convenience you get three modes, pretty print, pretty json or json, with json being the default
+- we expect the format of java loggers - i.e. {} in place of values because then we don't bother evaluation it
+  and writing it if we aren't writing that log level. aka: don't use the back-tilde format or other such malarky.
+
+
+==== getting a logger
+
+----
+const x = ConnectLogger.createLogger(path);
+----
+
+`path` is the name you wish to give to your logger, it allows the logging to be excluded and gives more
+information when trying to find logs relating to a specific issue. It turns up as 'path' in your JSON logs.
+
+==== adding context
+
+calling `context` will merge with what is there. it returns the logger so you can log in chain mode.
+
+----
+x.context({someValue: 'hello})
+----
+
+calling `context` with null will wipe it out (why else would you call with null? that would be silly.)
+
+----
+x.context(null)
+----
+
+==== logging
+
+trace/debug/info/warn/error/rest - and level('name', ....)
+
+----
+x.info('there is a `{}` at the end of my ${} `{}`', 'fish', 300, 'hook');
+----
+
+==== configuration
+
+As connect-config-loader uses this for logging, config is by environment variable only.
+
+- `CONNECT_LOG_STYLE`  = `pretty`, `pretty-json`, `json` with `json` being default.
+- `CONNECT_LOG_EXCLUDES` = any of the levels, comma separated to exclude those levels
+- `CONNECT_LOG_PATH` = any of the names that get passed when creating a logger.
+
+e.g.
+
+in your environment:
+----
+CONNECT_LOG_STYLE=pretty
+CONNECT_LOG_EXCLUDES=trace,rest
+CONNECT_LOG_PATHS=this-library,that-library
+----
+
+vs (in your yml config)
+----
+connect-logging:
+  style: "pretty"
+  exclude: "trace,rest"
+----
+
+  
