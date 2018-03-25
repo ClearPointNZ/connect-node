@@ -106,7 +106,7 @@
     "indent": false,
     "no-consecutive-blank-lines": true,
     "no-empty-line-after-opening-brace": false,
-    "no-trailing-whitespace": true,
+    "no-trailing-whitespace": false,
     "no-unnecessary-semicolons": true,
     "one-line": [
       true,

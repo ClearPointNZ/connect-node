@@ -40,6 +40,6 @@
     "node": ">=8.1.0"
   },
   "devDependencies": {
-		"connect-build": "file:.yalc/connect-build"
-	}
+    "connect-build": "file:.yalc/connect-build"
+  }
 }

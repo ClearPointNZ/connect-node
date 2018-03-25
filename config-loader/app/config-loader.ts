@@ -148,13 +148,16 @@ export class ConfigurationLoader {
 
 			const val = _.get(loadedProperties, pathOfConfiguration);
 
-			// console.log('property ', property, ' from ', pathOfConfiguration, 'required', required, 'val', val);
-
 			if (val) {
 				fullObject[property] = val;
 			} else if (required) {
 				throw new Error('field ' + property + ' key ' + pathOfConfiguration + ' does not have a value.');
 			}
+		}
+
+		// see if there is a post configured function to call and call it.
+		if (fullObject['postConfigured']) {
+			fullObject['postConfigured'](); // assume this is a function.
 		}
 	}
 
