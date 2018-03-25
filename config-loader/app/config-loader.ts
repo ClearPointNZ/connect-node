@@ -10,6 +10,7 @@ import * as _ from 'lodash';
 import * as chokidar from 'chokidar';
 import {ParsedArgs} from 'minimist';
 import 'reflect-metadata';
+import {ConnectLogger} from 'connect-logger/target/app/connect-logger';
 
 let loadedProperties;
 
@@ -21,6 +22,8 @@ export interface ConfigurationPropertyInitializer {
 export interface IndexedObject {
 	[index: string]: any;
 }
+
+const logger = ConnectLogger.createLogger('connect-config-loader');
 
 export function configKey(key: string, required: boolean = false) {
 	function configKeyDecorator(target: any, property: string | symbol): void {
@@ -99,15 +102,15 @@ export class ConfigurationLoader {
 	}
 
 	private async loadProperties() : Promise<void> {
-		console.log('loading from ', process.cwd());
+		logger.info('loading from {}', process.cwd());
 
 		for (const propertyFile of this.propertyFiles) {
 			try {
-				console.log('loading... ', '`' + propertyFile + '`', fs.realpathSync(propertyFile));
+				logger.info('loading file `{}`', propertyFile);
 				const additionalProperties = jsYaml.safeLoad(fs.readFileSync(propertyFile, 'utf8'));
 				_.merge(loadedProperties, additionalProperties);
 			} catch (e) {
-				console.error('Error loading property file', propertyFile, e);
+				logger.error('Error loading property file {}', propertyFile, e);
 			}
 		}
 
@@ -151,6 +154,7 @@ export class ConfigurationLoader {
 			if (val) {
 				fullObject[property] = val;
 			} else if (required) {
+				logger.error('field `{}`, key `{}` does not have a value.', property, pathOfConfiguration);
 				throw new Error('field ' + property + ' key ' + pathOfConfiguration + ' does not have a value.');
 			}
 		}

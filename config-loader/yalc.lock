@@ -4,6 +4,10 @@
     "connect-build": {
       "signature": "42031d8d8a83276d12c01ce3a94c7caf",
       "file": true
+    },
+    "connect-logger": {
+      "signature": "3a60cb7bac367a2d8395cc1bf160e319",
+      "file": true
     }
   }
 }

@@ -78,8 +78,6 @@ export class ConnectLogger {
 	public priority(pri : string, message : string, ...params: any[]) {
 		const priority = (pri || 'trace').toLowerCase();
 
-		console.error('params is ', params);
-
 		if (excludedPriorities[priority] || excludedPaths[this.path]) {
 			return;
 		}
@@ -97,13 +95,15 @@ export class ConnectLogger {
 
 				if (pos < params.length) {
 					const isErr = this.isError(params[pos]);
+
 					if (isErr) {
-						whole.push(' (');
+						whole.push(' (' + params[pos]['message'] + ')');
+					} else if (params[pos] instanceof Object) {
+						whole.push(JSON.stringify(params[pos]));
+					} else {
+						whole.push(params[pos].toString());
 					}
-					whole.push(params[pos].toString());
-					if (isErr) {
-						whole.push(')');
-					}
+
 					pos = pos + 1;
 				}
 			});

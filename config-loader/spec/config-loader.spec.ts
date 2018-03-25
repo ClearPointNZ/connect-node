@@ -7,6 +7,8 @@ import { expect } from 'chai';
 import 'mocha';
 import * as _ from 'lodash';
 
+import {ConnectLogger} from 'connect-logger/target/app/connect-logger';
+
 class Booya {
 	@configKey('yourobject.value_d')
 	public fred : number;
@@ -19,6 +21,8 @@ class Hooya {
 	public simple2 : string;
 }
 
+const logger = ConnectLogger.createLogger('config-loader-spec');
+
 class SimpleInitializer implements ConfigurationPropertyInitializer {
 	public async process(cl : ConfigurationLoader, loadedProperties: any) : Promise<void> {
 		const value = _.get(loadedProperties, 'simple');
@@ -26,7 +30,7 @@ class SimpleInitializer implements ConfigurationPropertyInitializer {
 		if (value) {
 			_.set(loadedProperties, 'simple',  value.toString() + 'x');
 			_.set(loadedProperties, 'duplicate.simple', value);
-			console.log('loaded properties: ', loadedProperties);
+			logger.info('loaded properties: ', loadedProperties);
 		}
 	}
 }
