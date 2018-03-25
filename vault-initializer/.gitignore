@@ -11,4 +11,5 @@ common-library/reports
 subscribe-pay/features/reports
 tmp
 .yalc
+yalc.lock
 @rerun*
