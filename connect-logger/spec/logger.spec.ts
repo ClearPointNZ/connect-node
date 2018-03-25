@@ -1,4 +1,4 @@
-
+//
 // process.env.CONNECT_LOG_EXCLUDES = 'sausage';
 // process.env.CONNECT_LOG_PATHS = 'cumberlands';
 //
@@ -30,7 +30,7 @@
 // 		const log = JSON.parse(logs[0][0]);
 // 		expect(log).to.not.equal(null);
 // 		expect(log.message).to.equal('this is not $5 but is seven dollars');
-// 		expect(log.level).to.equal('INFO');
+// 		expect(log.priority).to.equal('INFO');
 // 		expect(log.path).to.equal('sample');
 // 	});
 //
@@ -44,20 +44,29 @@
 // 		expect(log.path).to.equal('sample');
 // 	});
 //
-// 	it('should exclude the sausage level from the logs', () => {
+// 	it('should exclude the sausage priority from the logs', () => {
 // 		const sample = ConnectLogger.createLogger('sample');
 // 		ConnectLogger.registerAugmenter((logBody) => {
 // 			logBody['snookum-killer'] = 'here';
-// 			return logBody['level'] !== 'SNOOKUMS';
+// 			return logBody['priority'] !== 'SNOOKUMS';
 // 		});
 // 		sample.info('info');
-// 		sample.level('sausage', 'info');
-// 		sample.level('snookums', 'info');
-// 		sample.level('pookums', 'info');
+// 		sample.priority('sausage', 'info');
+// 		sample.priority('snookums', 'info');
+// 		sample.priority('pookums', 'info');
 // 		console.error('logs are: ', logs);
 // 		expect(logs.length).to.equal(2);
 // 		expect(logs[0][0]).to.contain('INFO');
 // 		expect(logs[1][0]).to.contain('POOKUMS');
 // 		expect(logs[1][0]).to.contain('snookum-killer');
+// 	});
+//
+// 	it('should log a stack trace', () => {
+// 		const sample = ConnectLogger.createLogger('sample');
+// 		sample.info('info', new Error('torpid the eel'));
+// 		const log = JSON.parse(logs[0][0]);
+// 		expect(log.stack_trace).to.contain('torpid');
+// 		expect(log.message).to.contain(' (Error');
+// 		console.error('st logs are:', logs );
 // 	});
 // });

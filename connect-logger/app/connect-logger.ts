@@ -7,8 +7,6 @@ enum Style {
 function discoverStyle() {
 	const configuredStyle = process.env.CONNECT_LOG_STYLE || 'json';
 
-	console.error('style is ', configuredStyle);
-
 	if (configuredStyle === 'pretty') {
 		return Style.PRETTY;
 	} else if (configuredStyle === 'pretty-json') {
@@ -26,17 +24,17 @@ interface Excluded {
 const style : Style = discoverStyle();
 
 function discoverExcluded(parse: string) {
-	const levels: Excluded = {};
+	const values: Excluded = {};
 
 	parse.split(',')
 		.map((s) => s.trim().toLowerCase())
 		.filter((s) => s.length > 0)
-		.forEach((s) => levels[s] = s);
+		.forEach((s) => values[s] = s);
 
-	return levels;
+	return values;
 }
 
-const excludedLevels : Excluded = discoverExcluded((process.env.CONNECT_LOG_EXCLUDES || ''));
+const excludedPriorities : Excluded = discoverExcluded((process.env.CONNECT_LOG_EXCLUDES || ''));
 const excludedPaths : Excluded = discoverExcluded((process.env.CONNECT_LOG_PATHS || ''));
 
 export interface LoggerAugmenter {
@@ -73,30 +71,52 @@ export class ConnectLogger {
 		return this;
 	}
 
-	public level(lvl : string, message : string, ...params: any[]) {
-		const level = (lvl || 'trace').toLowerCase();
+	private isError(e: any) : boolean {
+		return e && e.stack && e.message && typeof e.stack === 'string' && typeof e.message === 'string';
+	}
 
-		if (excludedLevels[level] || excludedPaths[this.path]) {
+	public priority(pri : string, message : string, ...params: any[]) {
+		const priority = (pri || 'trace').toLowerCase();
+
+		console.error('params is ', params);
+
+		if (excludedPriorities[priority] || excludedPaths[this.path]) {
 			return;
 		}
 
 		let pos = 0;
-		const whole = [];
-		if (!params) {
-			whole.push(message || '');
+		const logBody = {'@timestamp': new Date().toISOString(), priority: priority.toUpperCase(), path: this.path, message: ''};
+
+		if (!params || params.length === 0) {
+			logBody.message = message;
 		} else {
+			const whole = [];
+
 			(message || '').split('{}').forEach((part) => {
 				whole.push(part);
 
-				if (params && params[0] && pos < params[0].length) {
-					whole.push(params[0][pos].toString());
+				if (pos < params.length) {
+					const isErr = this.isError(params[pos]);
+					if (isErr) {
+						whole.push(' (');
+					}
+					whole.push(params[pos].toString());
+					if (isErr) {
+						whole.push(')');
+					}
+					pos = pos + 1;
 				}
-
-				pos = pos + 1;
 			});
+
+			logBody.message = whole.join('');
+
+			const e = params[params.length - 1];
+
+			if (this.isError(e)) {
+				logBody['stack_trace'] = e.message + ':' + e.stack;
+			}
 		}
 
-		const logBody = {'@timestamp': new Date().toISOString(), 'message': whole.join(''), level: level.toUpperCase(), path: this.path};
 		_.merge(logBody, this.ctx);
 
 		for (const augmentor of ConnectLogger.loggerAumentors) {
@@ -113,39 +133,43 @@ export class ConnectLogger {
 			// make a shallow copy of the fields other than the ones we are printing out
 			const copy = {};
 			for (const k of Object.keys(logBody)) {
-				if (k !== 'level' && k !== '@timestamp' && k !== 'path' && k !== 'message') {
+				if (k !== 'priority' && k !== '@timestamp' && k !== 'path' && k !== 'message' && k !== 'stack_trace') {
 					copy[k] = logBody[k];
 				}
 			}
 			if (Object.keys(copy).length > 0) {
-				console.log(logBody.level.padEnd(6), logBody['@timestamp'], '[' + logBody.path + ']', logBody.message, JSON.stringify(copy));
+				console.log(logBody.priority.padEnd(6), logBody['@timestamp'], '[' + logBody.path + ']', logBody.message, JSON.stringify(copy));
 			} else {
-				console.log(logBody.level.padEnd(6), logBody['@timestamp'], '[' + logBody.path + ']', logBody.message);
+				console.log(logBody.priority.padEnd(6), logBody['@timestamp'], '[' + logBody.path + ']', logBody.message);
+			}
+
+			if (logBody['stack_trace']) {
+				console.log(logBody['stack_trace']);
 			}
 		}
 	}
 
 	public trace(message : string, ...params: any[]) {
-		this.level('trace', message, params);
+		this.priority('trace', message, ...params);
 	}
 
 	public rest(message : string, ...params: any[]) {
-		this.level('rest', message, params);
+		this.priority('rest', message, ...params);
 	}
 
 	public debug(message : string, ...params: any[]) {
-		this.level('debug', message, params);
+		this.priority('debug', message, ...params);
 	}
 
 	public info(message : string, ...params: any[]) {
-		this.level('info', message, params);
+		this.priority('info', message, ...params);
 	}
 
 	public warn(message : string, ...params: any[]) {
-		this.level('warn', message, params);
+		this.priority('warn', message, ...params);
 	}
 
 	public error(message : string, ...params: any[]) {
-		this.level('error', message, params);
+		this.priority('error', message, ...params);
 	}
 }

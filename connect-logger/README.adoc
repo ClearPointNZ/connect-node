@@ -1,18 +1,18 @@
 == why another logging library?
 
 This one is geared specifically towards k8s deployed applications. That means it needs to self configure
-from external configuration, it always writes to the console, it always handles context, and log levels are
+from external configuration, it always writes to the console, it always handles context, and log priorities are
 whatever the hell i want them to be and are not restricted to numbers (really bunyan? that is so utterly daft)
 or some arbitrary enforced step-grade (aka winston and everything else).
 
 - connect-logging always logs to the console.
-- the you tell it the log level names you want to turn off, not the ones you want to turn on
-- log levels are arbitrary but several are set up for you
+- the you tell it the log priority names you want to turn off, not the ones you want to turn on
+- log priorities are arbitrary but several are set up for you
 - each logger stores context, you create loggers, store context in them and then let them disappear when
   you have finished.
 - for convenience you get three modes, pretty print, pretty json or json, with json being the default
 - we expect the format of java loggers - i.e. {} in place of values because then we don't bother evaluation it
-  and writing it if we aren't writing that log level. aka: don't use the back-tilde format or other such malarky.
+  and writing it if we aren't writing that log priority. aka: don't use the back-tilde format or other such malarky.
 
 
 ==== getting a logger
@@ -40,18 +40,30 @@ x.context(null)
 
 ==== logging
 
-trace/debug/info/warn/error/rest - and level('name', ....)
+trace/debug/info/warn/error/rest - and priority('name', ....)
 
 ----
 x.info('there is a `{}` at the end of my ${} `{}`', 'fish', 300, 'hook');
 ----
+
+==== logging exceptions
+
+We expect the last parameter to be an exception if there is one. It will always be checked to see even
+if it matches the number of parameters. e.g. if you have the following
+
+----
+x.error('there is an error! {}', e)
+----
+
+then `toString()` will be called on `e` to make up the string, but the last parameter will always be checked to
+see if it is an exception, and if so, it will add an extra field called "stack_trace".
 
 ==== configuration
 
 As connect-config-loader uses this for logging, config is by environment variable only.
 
 - `CONNECT_LOG_STYLE`  = `pretty`, `pretty-json`, `json` with `json` being default.
-- `CONNECT_LOG_EXCLUDES` = any of the levels, comma separated to exclude those levels
+- `CONNECT_LOG_EXCLUDES` = any of the priorities, comma separated to exclude those priorities
 - `CONNECT_LOG_PATH` = any of the names that get passed when creating a logger.
 
 e.g.

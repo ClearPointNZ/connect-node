@@ -31,4 +31,11 @@ describe('pretty logging works as expected', () => {
 		expect(logs[0][2]).to.equal('[sample]');
 		// expect(logs[0][0]).to.contain('\n');
 	});
+
+	it('should multi-line stack traces', () => {
+		const logger = ConnectLogger.createLogger('sample');
+		logger.priority('wibble', 'message', 1, new Error('hum dinger'));
+		expect(logs.length).to.equal(2);
+		expect(logs[1][0]).to.contain('hum');
+	});
 });
