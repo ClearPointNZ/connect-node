@@ -2,11 +2,15 @@
   "version": "v1",
   "packages": {
     "connect-build": {
-      "signature": "42031d8d8a83276d12c01ce3a94c7caf",
+      "signature": "774a03ccd5192b4098d6b26c5f5174fd",
       "file": true
     },
     "connect-config-loader": {
-      "signature": "02a23efa4f165892e0dc20e7219442fa",
+      "signature": "45d933168d361232f4951ac612b45c54",
+      "file": true
+    },
+    "connect-logger": {
+      "signature": "055b62237e29be9e6c77152743fd8331",
       "file": true
     }
   }

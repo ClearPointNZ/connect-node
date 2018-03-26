@@ -58,10 +58,12 @@ class ConfigKeyConfig {
 	}
 }
 
+const postProcessors: ConfigurationPropertyInitializer[] = [];
+
 export class ConfigurationLoader {
 
 	private propertyFiles: string[];
-	private static postProcessors: ConfigurationPropertyInitializer[] = [];
+
 	private objects: IndexedObject[] = [];
 
 	protected static getConnectConfig(): ParsedArgs {
@@ -87,7 +89,7 @@ export class ConfigurationLoader {
 				});
 			}, 0);
 
-			return this.loadProperties();
+			await this.loadProperties();
 		}
 	}
 
@@ -98,7 +100,8 @@ export class ConfigurationLoader {
 	}
 
 	public static registerInitializer(cpp: ConfigurationPropertyInitializer) {
-		ConfigurationLoader.postProcessors.push(cpp);
+		postProcessors.push(cpp);
+		logger.info('registering initializer {}', postProcessors);
 	}
 
 	private async loadProperties() : Promise<void> {
@@ -118,7 +121,8 @@ export class ConfigurationLoader {
 
 		const initializers : Promise<void>[] = [];
 
-		ConfigurationLoader.postProcessors.forEach((cpp) => {
+		logger.info('post processor count: {}', postProcessors);
+		postProcessors.forEach((cpp) => {
 			initializers.push(cpp.process(this, loadedProperties));
 		});
 
@@ -193,3 +197,5 @@ export class ConfigurationLoader {
 		loadedProperties.env = env;
 	}
 }
+
+export const configurationLoader = new ConfigurationLoader();

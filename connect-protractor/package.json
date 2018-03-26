@@ -26,7 +26,11 @@
   },
   "dependencies": {
     "connect-config-loader": "file:.yalc/connect-config-loader",
-    "connect-vault-initializer": "file:.yalc/connect-vault-initializer"
+    "connect-logger": "file:.yalc/connect-logger",
+    "connect-vault-initializer": "file:.yalc/connect-vault-initializer",
+    "cucumber": "3.0.4",
+    "protractor": "^5.3.0",
+    "protractor-cucumber-framework": "4.0.0"
   },
   "engines": {
     "node": ">=8.1.0"

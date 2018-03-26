@@ -33,7 +33,7 @@
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.0.0.tgz#a3014921991066193f6c8e47290d4d598dfd19e6"
 
-"@types/node@*":
+"@types/node@*", "@types/node@^9.6.0":
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.0.tgz#d3480ee666df9784b1001a1872a2f6ccefb6c2d7"
 
@@ -354,16 +354,23 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
 
 "connect-build@file:.yalc/connect-build":
-  version "1.1.1-42031d8d"
+  version "1.1.1-774a03cc"
   dependencies:
     "@types/chai" "4.1.2"
     "@types/mocha" "5.0.0"
+    "@types/node" "^9.6.0"
     chai "4.1.2"
     mocha "5.0.5"
     ts-node "5.0.1"
     tslint "5.9.1"
     tslint-microsoft-contrib "5.0.3"
     typescript "2.7.2"
+
+"connect-logger@file:.yalc/connect-logger":
+  version "1.1.1-055b6223"
+  dependencies:
+    "@types/lodash" "^4.14.106"
+    lodash "^4.17.5"
 
 console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"

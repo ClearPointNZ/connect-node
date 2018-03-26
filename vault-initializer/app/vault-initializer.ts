@@ -4,12 +4,15 @@ import * as fs from 'fs';
 import * as rp from 'request-promise-native';
 import * as vault from 'node-vault';
 import * as _ from 'lodash';
+import {ConnectLogger} from 'connect-logger/target/app/connect-logger';
 
 interface SubPropertyMap {
 	[key: string]: string;
 }
 
 const VAULT_KEY_PREFIX : string = '[K8SVAULT]';
+
+const logger = ConnectLogger.createLogger('connect.vault-initializer');
 
 class VaultKey {
 	// I'm with Steve Yegge on this one
@@ -60,16 +63,21 @@ export class VaultInitializer implements ConfigurationPropertyInitializer {
 	public async process(configLoader: ConfigurationLoader, loadedProperties: any) {
 		this.configLoader = configLoader;
 
-		console.log('here', loadedProperties);
-
 		this.vaultUrl = configLoader.get('vault.url');
 		if (this.vaultUrl) {
 			this.walkKeys('', loadedProperties);
 
 			if (this.vaultKeys.length > 0) {
-				console.log('haz keys');
-				await this.configureVaultClient(loadedProperties);
+				if (process.env.CONNECT_APP_SECRET_ID) {
+					await this.configureAppClient(loadedProperties);
+				} else {
+					await this.configureKubernetesClient(loadedProperties);
+				}
+			} else {
+				logger.info('vault: url configured but no keys.');
 			}
+		} else {
+			logger.debug('vault: not configured, ignoring');
 		}
 	}
 
@@ -77,7 +85,37 @@ export class VaultInitializer implements ConfigurationPropertyInitializer {
 		return fs.readFileSync(filename, {encoding: 'UTF-8'}).toString();
 	}
 
-	private async configureVaultClient(props: any) : Promise<void> {
+	private async configureAppClient(props: any) : Promise<void> {
+		const roleId = this.configLoader.get('env.CONNECT_APP_ROLE_ID', this.configLoader.get('vault.role_id'));
+		if (roleId == null) {
+			throw new Error('CONNECT_APP_SECRET_ID specified in environment but no role id found.');
+		}
+
+		const vaultCert = VaultInitializer.readFile(this.configLoader.get('env.VAULT_CERTFILE',
+			this.configLoader.get('vault.certFile', './vault-ca.crt')));
+
+		logger.info('attempting to connect to Vault using AppRoleLogin.');
+
+		const options = <vault.Option> {
+			apiVersion: 'v1',
+			endpoint: this.vaultUrl
+		};
+
+		const vaultClient = vault(options);
+		const authResult = await vaultClient.approleLogin({
+			requestOptions: { ca: vaultCert },
+			role_id: roleId,
+			secret_id: process.env.CONNECT_APP_SECRET_ID
+		});
+
+		logger.info('auth result {}', authResult);
+
+		const token = _.get(authResult, 'auth.client_token');
+
+		await this.resolveKeys(token, vaultCert, props);
+	}
+
+	private async configureKubernetesClient(props: any) : Promise<void> {
 		const vaultJwtTokenFile = this.configLoader.get('env.VAULT_TOKENFILE',
 			this.configLoader.get('vault.tokenFile', '/var/run/secrets/kubernetes.io/serviceaccount/token'));
 		const vaultCert = VaultInitializer.readFile(this.configLoader.get('env.VAULT_CERTFILE',
@@ -103,6 +141,10 @@ export class VaultInitializer implements ConfigurationPropertyInitializer {
 
 		const realToken = await this.requestAuthToken(vaultJwtToken, vaultRole, vaultCert, vaultRoleUrl);
 
+		await this.resolveKeys(realToken, vaultCert, props);
+	}
+
+	private async resolveKeys(realToken: string, vaultCert: string, props: any) {
 		const options = <vault.Option> {
 			apiVersion: 'v1',
 			endpoint: this.vaultUrl,
@@ -123,6 +165,7 @@ export class VaultInitializer implements ConfigurationPropertyInitializer {
 		});
 
 		await Promise.all(vaultRequests);
+
 	}
 
 	private async requestAuthToken(vaultJwtToken: string, vaultRole : string, vaultCa: string, vaultRolePath: string) : Promise<string> {
