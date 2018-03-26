@@ -3,7 +3,7 @@
   "version": "1.1.1",
   "description": "a stateful logger for connect that matches the Java expectations in format.",
   "author": "Richard Vowles <richard@bluetrainsoftware.com>",
-  "main": "./target/app/config-loader.js",
+  "main": "./target/app/connect-logger.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ClearPointNZ/connect-node.git"
@@ -15,6 +15,8 @@
     "properties",
     "yaml"
   ],
+  "license": "MIT",
+  "homepage": "https://connect.cd",
   "scripts": {
     "build": "yarn run tsc",
     "build:watch": "yarn run build -- -- -w",

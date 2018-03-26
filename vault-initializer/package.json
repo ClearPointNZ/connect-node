@@ -13,6 +13,8 @@
     "security",
     "pookums"
   ],
+  "license": "MIT",
+  "homepage": "https://connect.cd",
   "scripts": {
     "build": "yarn run tsc",
     "build:watch": "yarn run build -- -- -w",

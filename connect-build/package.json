@@ -8,19 +8,15 @@
     "type": "git",
     "url": "https://github.com/ClearPointNZ/connect-node.git"
   },
+  "homepage": "https://connect.cd",
   "keywords": [
     "build",
     "security",
     "droplets-of-doom"
   ],
+  "license": "MIT",
+  "homepage": "https://connect.cd",
   "scripts": {
-    "build": "yarn run tsc",
-    "build:watch": "yarn run build -- -- -w",
-    "test": "yarn run mocha -- --opts mocha.opts",
-    "test:watch": "yarn run mocha --opts mocha.opts --watch",
-    "mocha": "node ./node_modules/mocha/bin/mocha",
-    "tsc": "node ./node_modules/typescript/bin/tsc",
-    "lint": "node ./node_modules/tslint/bin/tslint -r ./node_modules/tslint-microsoft-contrib/ \"app/**/*.ts\" \"spec/**/*.ts\" -e \"app/generated-code/**/*\""
   },
   "dependencies": {
     "@types/chai": "4.1.2",
