@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 import * as chokidar from 'chokidar';
 import {ParsedArgs} from 'minimist';
 import 'reflect-metadata';
-import {ConnectLogger} from 'connect-logger/target/app/connect-logger';
+import {ConnectLogger} from 'connect-logger-core';
 
 let loadedProperties;
 

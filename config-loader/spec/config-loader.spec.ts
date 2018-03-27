@@ -7,7 +7,7 @@ import { expect } from 'chai';
 import 'mocha';
 import * as _ from 'lodash';
 
-import {ConnectLogger} from 'connect-logger/target/app/connect-logger';
+import {ConnectLogger} from 'connect-logger-core';
 
 class Booya {
 	@configKey('yourobject.value_d')

@@ -33,7 +33,7 @@
     "@types/minimist": "^1.2.0",
     "@types/node": "^9.4.7",
     "chokidar": "^2.0.3",
-    "connect-logger": "file:.yalc/connect-logger",
+    "connect-logger-core": "^1.1.1",
     "js-yaml": "^3.11.0",
     "lodash": "^4.17.5",
     "minimist": "^1.2.0",

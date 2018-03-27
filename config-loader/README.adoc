@@ -29,7 +29,7 @@ To load the configuration you must call "load" on the `configurationLoader` that
 
 [source,javascript]
 ----
-const configLoader = require('connect-config-loader/target/app/config-loader').configurationLoader;
+const configLoader = require('connect-config-loader').configurationLoader;
 await configLoader.load();
 ----
 

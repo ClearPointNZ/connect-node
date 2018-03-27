@@ -366,8 +366,9 @@ concat-map@0.0.1:
     tslint-microsoft-contrib "5.0.3"
     typescript "2.7.2"
 
-"connect-logger@file:.yalc/connect-logger":
-  version "1.1.1-055b6223"
+connect-logger-core@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/connect-logger-core/-/connect-logger-core-1.1.1.tgz#5bcb42d25e3a2c3d8bfe08d741035a87c3a0376e"
   dependencies:
     "@types/lodash" "^4.14.106"
     lodash "^4.17.5"
