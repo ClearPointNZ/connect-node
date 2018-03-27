@@ -1,0 +1,80 @@
+== Connect Configuration Loader
+
+This provides:
+
+- a method to externalise configuration from one or more outside configuration YAML files,
+- supports layering, so each file can get more specific (start with common, override with environmental)
+- allows that configuration to be transformed by registered initializers (eg. Vault keywords being referenced which
+  get resolved automatically once the config is loaded and inserted in place of the keys).
+- loads the environment into the configuration under the prefix "env", so you can approach all of your configuration
+  in a consistent manner
+- works from the command line or via an environment variable (`CONNECT_CONFIG`)
+- allows you to arbitrarily get config out with a path and a default
+- allows you to inject config from a tree node into an object, including subobjects
+- gives you first class support for annotating configuration in Typescript using 'configKey'
+- gives you a postConfigured function that can be called on your object when configuration has been injected.
+- watches for config file changes and repushes their contents to the objects registered with `set` (aka Kubernetes)
+
+Note: this library is asynchronous because initializers can be asynchronous (e.g. Vault).
+
+==== Defining Configuration Files
+
+If an environment variable called  `CONNECT_CONFIG` exists, it will use this, otherwise it will look on the command
+line. In both cases, it looks for `-p file.yml -p file2.yml ...` - a chain of -p followed by a space followed by a filename.
+It will load those in in order, with values from the second, etc files replacing the same named fields in the first.
+
+If there are no configuration files, it does not fire.
+
+To load the configuration you must call "load" on the `configurationLoader` that is exported from the library.
+
+[source,javascript]
+----
+const configLoader = require('connect-config-loader/target/app/config-loader').configurationLoader;
+await configLoader.load();
+----
+
+==== Environment variables
+
+Once all of the config has been copied in, it will copy the system environment variables into the configuration under
+the prefix `env`. So `env.CONNECT_CONFIG` will exist if you used the environment variable for configuration as per
+above.
+
+==== Manually getting data
+
+This you can use to get values if you wish:
+
+[source,javascript]
+----
+configLoader.get('env.CONNECT_CONFIG', 'some-default-value');
+----
+
+You can also set a variable and ask it to inject all elements under that tree into your object:
+
+[source,javascript]
+----
+const env = {_configIndex: 'env', postConfigured: () => { console.log('finished!'); }};
+configLoader.set(env);
+// should print "finished!" if you change your config while this is running it will do so each time
+----
+
+
+==== Typescript
+
+With Typescript you can use annotations instead, and give the option of the field being required and having alternative
+keys:
+
+----
+class MyConfigClass {
+  @configKey('env.DB_PASSWORD', true, ['db.password'])
+  public String dbPassword;
+
+  public postConfigured() {
+    logger.info('have db info');
+  }
+}
+
+const mcc = new MyConfigClass();
+configLoader.set(mcc);
+----
+
+It is possible to do this for Javascript by pushing the config into the Object, but its quite painful.

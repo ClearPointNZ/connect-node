@@ -13,13 +13,16 @@ or some arbitrary enforced step-grade (aka winston and everything else).
 - for convenience you get three modes, pretty print, pretty json or json, with json being the default
 - we expect the format of java loggers - i.e. {} in place of values because then we don't bother evaluation it
   and writing it if we aren't writing that log priority. aka: don't use the back-tilde format or other such malarky.
+- works in javascript or typescript (first class).
 
 
 ==== getting a logger
 
+[source,typescript]
 ----
 const x = ConnectLogger.createLogger(path);
 ----
+
 
 `path` is the name you wish to give to your logger, it allows the logging to be excluded and gives more
 information when trying to find logs relating to a specific issue. It turns up as 'path' in your JSON logs.
