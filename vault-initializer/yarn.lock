@@ -427,8 +427,9 @@ concat-map@0.0.1:
     tslint-microsoft-contrib "5.0.3"
     typescript "2.7.2"
 
-"connect-config-loader@file:.yalc/connect-config-loader":
-  version "1.1.1-810e4604"
+connect-config-loader@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/connect-config-loader/-/connect-config-loader-1.1.1.tgz#c2e8c3005cf639832337f3c5f292c1c7abc4dc90"
   dependencies:
     "@types/chokidar" "^1.7.5"
     "@types/js-yaml" "^3.10.1"
@@ -436,20 +437,15 @@ concat-map@0.0.1:
     "@types/minimist" "^1.2.0"
     "@types/node" "^9.4.7"
     chokidar "^2.0.3"
-    connect-logger "file:../../../../Library/Caches/Yarn/v1/npm-connect-config-loader-1.1.1-810e4604-e815c223-9518-47a7-acc7-488e0675f5fb-1522014639128/.yalc/connect-logger"
+    connect-logger-core "^1.1.1"
     js-yaml "^3.11.0"
     lodash "^4.17.5"
     minimist "^1.2.0"
     reflect-metadata "^0.1.12"
 
-"connect-logger@file:.yalc/connect-config-loader/.yalc/connect-logger":
-  version "1.1.1-055b6223"
-  dependencies:
-    "@types/lodash" "^4.14.106"
-    lodash "^4.17.5"
-
-"connect-logger@file:.yalc/connect-logger":
-  version "1.1.1-055b6223"
+connect-logger-core@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/connect-logger-core/-/connect-logger-core-1.1.1.tgz#5bcb42d25e3a2c3d8bfe08d741035a87c3a0376e"
   dependencies:
     "@types/lodash" "^4.14.106"
     lodash "^4.17.5"

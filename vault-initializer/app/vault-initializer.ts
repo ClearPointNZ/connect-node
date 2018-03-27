@@ -1,10 +1,10 @@
 
-import {ConfigurationLoader, ConfigurationPropertyInitializer} from 'connect-config-loader/target/app/config-loader';
+import {ConfigurationLoader, ConfigurationPropertyInitializer} from 'connect-config-loader';
 import * as fs from 'fs';
 import * as rp from 'request-promise-native';
 import * as vault from 'node-vault';
 import * as _ from 'lodash';
-import {ConnectLogger} from 'connect-logger/target/app/connect-logger';
+import {ConnectLogger} from 'connect-logger-core';
 
 interface SubPropertyMap {
 	[key: string]: string;
