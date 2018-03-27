@@ -3,7 +3,7 @@
   "version": "1.1.1",
   "description": "a standard way to find and deploy vault keys",
   "author": "Richard Vowles <richard@bluetrainsoftware.com>",
-  "main": "./target/app/config-loader.js",
+  "main": "target/app/config-loader.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ClearPointNZ/connect-node.git"
