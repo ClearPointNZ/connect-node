@@ -242,10 +242,10 @@ export class VaultInitializer implements ConfigurationPropertyInitializer {
 			for (const k of Object.keys(key.subPropertyFieldNames)) {
 				const data = val[k];
 				if (data == null) {
-					logger.error('No `{}.{}` found for key `{}`', key.systemPropertyFieldName, k, key.vaultKeyName);
+					logger.error('No `{}.{}` found for key `{}`', key.systemPropertyFieldName, key.subPropertyFieldNames[k], key.vaultKeyName);
 				} else {
-					_.set(props, key.systemPropertyFieldName + '.' + k, data);
-					logger.info('Set `{}.{} for key `{}`', key.systemPropertyFieldName, k, key.vaultKeyName);
+					_.set(props, key.systemPropertyFieldName + '.' + key.subPropertyFieldNames[k], data);
+					logger.info('Set `{}.{} for key `{}`', key.systemPropertyFieldName, key.subPropertyFieldNames[k], key.vaultKeyName);
 				}
 			}
 		}
