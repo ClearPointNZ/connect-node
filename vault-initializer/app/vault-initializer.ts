@@ -161,7 +161,10 @@ export class VaultInitializer implements ConfigurationPropertyInitializer {
 		this.vaultKeys.forEach((key) => {
 			vaultRequests.push(vaultClient.read(key.vaultKeyName, requestOptions).then((val) => {
 				VaultInitializer.fillKey(key, val.data, props);
-			}).catch((error) => console.error(error)));
+			}).catch((error) => {
+				logger.error('Key `{}` was not available.', key.vaultKeyName, error);
+			}
+			));
 		});
 
 		await Promise.all(vaultRequests);
@@ -184,10 +187,10 @@ export class VaultInitializer implements ConfigurationPropertyInitializer {
 
 			try {
 				const response = await rp(options);
-				console.log('response from vault for token: ', response);
+				logger.info('response from vault for token: {}', response);
 				return _.get(response, 'auth.client_token');
 			} catch (e) {
-				console.error('failed vault', e);
+				logger.error('fault request failed', e);
 				throw e;
 			}
 
@@ -220,30 +223,29 @@ export class VaultInitializer implements ConfigurationPropertyInitializer {
 	}
 
 	private static fillKey(key: VaultKey, val: any, props: any) {
-		console.log('val from vault is ', val);
 		if (key.treatAsMap) {
 			const kvLog = [];
 			for (const k of Object.keys(val)) {
 				kvLog.push(k + '=*****');
 			}
 			_.set(props, key.systemPropertyFieldName, val);
-			console.log(key.systemPropertyFieldName + ' is map:', kvLog.join(','));
+			logger.log('`{}` is a map', kvLog.join(','));
 		} else if (_.isEmpty(key.subPropertyFieldNames)) {
 			const data = val['value'];
 			if (data) {
 				_.set(props, key.systemPropertyFieldName, data);
-				console.log(key.systemPropertyFieldName + ' is set');
+				logger.info('set `{}` from vault', key.systemPropertyFieldName);
 			} else {
-				console.error('no \'value\' found for ', key.systemPropertyFieldName, ' key', key.vaultKeyName);
+				logger.error("No 'value' found for `{}` at key `{}`", key.systemPropertyFieldName, key.vaultKeyName);
 			}
 		} else {
 			for (const k of Object.keys(key.subPropertyFieldNames)) {
 				const data = val[k];
 				if (data == null) {
-					console.error('no \'', key.systemPropertyFieldName + '.' + k, '\' found for key', key.vaultKeyName);
+					logger.error('No `{}.{}` found for key `{}`', key.systemPropertyFieldName, k, key.vaultKeyName);
 				} else {
 					_.set(props, key.systemPropertyFieldName + '.' + k, data);
-					console.log('set \'', key.systemPropertyFieldName + '.' + k, '\' for key', key.vaultKeyName);
+					logger.info('Set `{}.{} for key `{}`', key.systemPropertyFieldName, k, key.vaultKeyName);
 				}
 			}
 		}
