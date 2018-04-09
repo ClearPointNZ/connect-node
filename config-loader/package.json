@@ -1,6 +1,6 @@
 {
   "name": "connect-config-loader",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "a standard way to find and deploy vault keys",
   "author": "Richard Vowles <richard@bluetrainsoftware.com>",
   "main": "target/app/config-loader.js",

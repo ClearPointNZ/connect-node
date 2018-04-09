@@ -1,6 +1,6 @@
 {
   "name": "connect-build",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "the standard set of dev dependencies for connect-typescript lilbraries",
   "author": "Richard Vowles <richard@bluetrainsoftware.com>",
   "main": "",
