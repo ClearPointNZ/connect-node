@@ -50,7 +50,7 @@ export class ConnectLogger {
 
 	private constructor(path: string) {
 		this.path = path;
-		this.ctx = null;
+		this.ctx = {};
 	}
 
 	public static createLogger(path: string = 'root') {
@@ -171,5 +171,9 @@ export class ConnectLogger {
 
 	public error(message : string, ...params: any[]) {
 		this.priority('error', message, ...params);
+	}
+
+	public log(message : string, ...params: any[]) {
+		this.priority('debug', message, ...params);
 	}
 }
