@@ -45,12 +45,14 @@ export interface LoggerAugmenter {
 export class ConnectLogger {
 	private ctx : any;
 	private path: string;
+	private pushContexts : any[];
 
 	private static loggerAumentors : LoggerAugmenter[] = [];
 
 	private constructor(path: string) {
 		this.path = path;
 		this.ctx = {};
+		this.pushContexts = [];
 	}
 
 	public static createLogger(path: string = 'root') {
@@ -71,15 +73,39 @@ export class ConnectLogger {
 		return this;
 	}
 
+	public push(newctx : any) : ConnectLogger {
+		this.pushContexts.push(newctx);
+
+		return this;
+	}
+
+	public pop() : ConnectLogger {
+		if (this.pushContexts.length > 0) {
+			this.pushContexts.pop();
+		}
+
+		return this;
+	}
+
+
+
 	private isError(e: any) : boolean {
 		return e && e.stack && e.message && typeof e.stack === 'string' && typeof e.message === 'string';
 	}
 
-	public priority(pri : string, message : string, ...params: any[]) {
+	public priority(pri : string, message : string, ...params: any[]) : ConnectLogger {
 		const priority = (pri || 'trace').toLowerCase();
 
-		if (excludedPriorities[priority] || excludedPaths[this.path]) {
+		if (excludedPriorities[priority] || excludedPaths[this.path] || message == null || _.isUndefined(message)) {
 			return;
+		}
+
+		if (!_.isString(message)) {
+			try {
+				message = (<string>message).toString();
+			} catch (e) {
+				message = '';
+			}
 		}
 
 		let pos = 0;
@@ -94,14 +120,20 @@ export class ConnectLogger {
 				whole.push(part);
 
 				if (pos < params.length) {
-					const isErr = this.isError(params[pos]);
-
-					if (isErr) {
-						whole.push(' (' + params[pos]['message'] + ')');
-					} else if (params[pos] instanceof Object) {
+					if (_.isError(params[pos])) {
+						whole.push(' (Error ' + params[pos]['message'] + ')');
+					} else if (_.isObject(params[pos])) {
 						whole.push(JSON.stringify(params[pos]));
+					} else if (_.isUndefined(params[pos])) {
+						whole.push('<<undefined>>');
+					} else if (_.isNull(params[pos])) {
+						whole.push('<<null>>');
 					} else {
-						whole.push(params[pos].toString());
+						try {
+							whole.push(params[pos].toString());
+						} catch (e) {
+							whole.push('<<field has no tostring>>');
+						}
 					}
 
 					pos = pos + 1;
@@ -118,6 +150,12 @@ export class ConnectLogger {
 		}
 
 		_.merge(logBody, this.ctx);
+
+		if (this.pushContexts.length > 0) {
+			this.pushContexts.forEach((pc) => {
+				_.merge(logBody, pc);
+			});
+		}
 
 		for (const augmentor of ConnectLogger.loggerAumentors) {
 			if (!augmentor(logBody)) {
@@ -147,33 +185,42 @@ export class ConnectLogger {
 				console.log(logBody['stack_trace']);
 			}
 		}
+
+		return this;
 	}
 
-	public trace(message : string, ...params: any[]) {
+	public trace(message : string, ...params: any[]) : ConnectLogger {
 		this.priority('trace', message, ...params);
+		return this;
 	}
 
-	public rest(message : string, ...params: any[]) {
+	public rest(message : string, ...params: any[]) : ConnectLogger {
 		this.priority('rest', message, ...params);
+		return this;
 	}
 
-	public debug(message : string, ...params: any[]) {
+	public debug(message : string, ...params: any[]) : ConnectLogger {
 		this.priority('debug', message, ...params);
+		return this;
 	}
 
-	public info(message : string, ...params: any[]) {
+	public info(message : string, ...params: any[]) : ConnectLogger {
 		this.priority('info', message, ...params);
+		return this;
 	}
 
-	public warn(message : string, ...params: any[]) {
+	public warn(message : string, ...params: any[]) : ConnectLogger {
 		this.priority('warn', message, ...params);
+		return this;
 	}
 
-	public error(message : string, ...params: any[]) {
+	public error(message : string, ...params: any[]) : ConnectLogger {
 		this.priority('error', message, ...params);
+		return this;
 	}
 
-	public log(message : string, ...params: any[]) {
+	public log(message : string, ...params: any[]) : ConnectLogger {
 		this.priority('debug', message, ...params);
+		return this;
 	}
 }

@@ -45,6 +45,8 @@ x.context(null)
 
 trace/debug/info/warn/error/rest - and priority('name', ....)
 
+Loggers can now be chained, which is useful for push/pop below.
+
 ----
 x.info('there is a `{}` at the end of my ${} `{}`', 'fish', 300, 'hook');
 ----
@@ -60,6 +62,19 @@ x.error('there is an error! {}', e)
 
 then `toString()` will be called on `e` to make up the string, but the last parameter will always be checked to
 see if it is an exception, and if so, it will add an extra field called "stack_trace".
+
+==== undefined, null, etc
+
+The library will deal with parameters that are undefined or null by inserting them in `\<<undefined>>`, etc
+tags. If it cannot "toString" the exception is caught and a sensible value inserted.
+
+==== push/pop contexts
+
+Sometimes you may wish to create a local version of your unit's logger, so you can now do
+
+push({'request-id': '12344'}).debug('some thing').pop()
+
+This avoids having to create a new logger each time.
 
 ==== configuration
 

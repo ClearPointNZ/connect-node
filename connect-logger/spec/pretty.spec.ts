@@ -1,4 +1,4 @@
-
+//
 // process.env.CONNECT_LOG_STYLE = 'pretty-json';
 //
 // import {ConnectLogger} from '../app/connect-logger';

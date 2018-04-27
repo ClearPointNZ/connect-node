@@ -34,6 +34,35 @@ describe('json logging works as expected', () => {
 		expect(log.path).to.equal('sample');
 	});
 
+	it('should allow me to add a push context', () => {
+		const logger = ConnectLogger.createLogger('sample');
+		logger.context({beef: 1}).info('hello').push({sausage: 'mine'}).debug('there').pop().warn('amigo');
+		expect(logs.length, 'count of logs').to.equal(3);
+		console.error(logs);
+		const log1 = JSON.parse(logs[0][0]);
+		expect(log1.message).to.equal('hello');
+		expect(log1.beef).to.equal(1);
+		expect(log1.sausage).to.be.undefined;
+		expect(log1.priority).to.equal('INFO');
+		const log2 = JSON.parse(logs[1][0]);
+		expect(log2.message).to.equal('there');
+		expect(log2.beef).to.equal(1);
+		expect(log2.sausage).to.equal('mine');
+		expect(log1.priority).to.equal('INFO');
+
+		expect(JSON.parse(logs[2][0]).sausage).to.be.undefined;
+	});
+
+	it('should be able to cope with undefined and null', () => {
+		const logger = ConnectLogger.createLogger('sample');
+		logger.debug('a field {} {} {}')
+			.log('undefined {}', undefined)
+			.log('null {}', null)
+			.log('',null,null)
+			.log(null);
+		console.error('exceptional: ', logs);
+	});
+
 	it('should exclude cumberlands path from the logs', () => {
 		const sample = ConnectLogger.createLogger('sample');
 		const sausage = ConnectLogger.createLogger('cumberlands');
@@ -64,9 +93,10 @@ describe('json logging works as expected', () => {
 	it('should log a stack trace', () => {
 		const sample = ConnectLogger.createLogger('sample');
 		sample.info('info', new Error('torpid the eel'));
+		console.error(logs);
 		const log = JSON.parse(logs[0][0]);
 		expect(log.stack_trace).to.contain('torpid');
-		expect(log.message).to.contain(' (Error');
+		expect(log.message).to.contain(' (Error torpid the eel)');
 		console.error('st logs are:', logs );
 	});
 });
